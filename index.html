@@ -282,6 +282,26 @@ function beep(freq = 1760, ms = 100, vol = 0.35) {
   } catch (e) {}
 }
 
+// 最後 5 秒的明亮提示音：高音 E7 + 多個泛音，聲音清脆醒目
+function alertBeep() {
+  if (!$('cSound').checked) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = ac.currentTime, end = t0 + 0.16;
+    const g = ac.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.003);
+    g.gain.setValueAtTime(0.5, t0 + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, end);
+    g.connect(ac.destination);
+    [[2637, 1, 'triangle'], [5274, 0.35, 'sine'], [7911, 0.15, 'sine']].forEach(([f, a, w]) => {
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.type = w; o.frequency.value = f; og.gain.value = a;
+      o.connect(og).connect(g); o.start(t0); o.stop(end + 0.02);
+    });
+  } catch (e) {}
+}
+
 // ---- 語音：可試聽、可選擇，選擇存在瀏覽器 ----
 const PRESETS = [
   { n: '標準', d: '原速、原音調', r: 1.0, p: 1.0 },
@@ -395,12 +415,12 @@ function tick() {
     remainMs -= over;
   }
   const sec = Math.ceil(remainMs / 1000);
-  if (running && sec >= 1 && sec <= 3 && sec !== lastBeepSec && sec < segs[idx].dur) {
+  if (running && sec >= 1 && sec <= 5 && sec !== lastBeepSec && sec < segs[idx].dur) {
     lastBeepSec = sec;
-    beep(1760, 90);                 // 最後 3 秒：提示音（維持原樣）
+    alertBeep();                    // 最後 5 秒：明亮提示音
   }
   const q = Math.ceil(remainMs / TICK_MS);
-  if (running && sec > 3 && q !== lastTickQ && q < segs[idx].dur * 1000 / TICK_MS) {
+  if (running && sec > 5 && q !== lastTickQ && q < segs[idx].dur * 1000 / TICK_MS) {
     lastTickQ = q;
     tickSound(q % 2 === 0);         // 其餘時間：快節奏滴答聲
   }
