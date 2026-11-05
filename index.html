@@ -334,6 +334,15 @@ function speak(t, v, pr, queue = false) {
   speechSynthesis.speak(u);
 }
 function preview(v, pr) { speak('開始', v, pr); setTimeout(() => speak('休息', v, pr, true), 50); }
+// iPhone 只允許在按按鈕當下開始說話：按「開始」時先無聲說一句，喚醒語音，之後自動播報才會出聲
+function unlockSpeech() {
+  if (!window.speechSynthesis || !$('cVoice').checked) return;
+  try {
+    const u = new SpeechSynthesisUtterance('。');
+    u.lang = 'zh-TW'; u.volume = 0; u.rate = 2;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
 function say(t) {
   if (!$('cVoice').checked) return;
   speak(t, voice, PRESETS[vcfg.preset] || PRESETS[0]);
@@ -433,6 +442,7 @@ async function start() {
   if (segs[idx].type === 'done') { build(); }
   running = true; lastTs = performance.now();
   try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
+  unlockSpeech();
   if (elapsedSec() === 0) { const s = segs[0]; beep(s.type === 'work' ? 2093 : 1568, 220); announceSeg(s); }
   timer = setInterval(tick, 25);
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
