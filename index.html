@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>間歇計時器</title>
+<meta name="apple-mobile-web-app-title" content="間歇計時器">
+<meta name="application-name" content="間歇計時器">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%232ecc71'/%3E%3Ccircle cx='160' cy='54' r='24' fill='%23fff'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M140 98 116 152'/%3E%3Cpath d='M138 104 176 126 204 104'/%3E%3Cpath d='M138 104 100 112 78 140'/%3E%3Cpath d='M116 152 162 178 150 226'/%3E%3Cpath d='M116 152 88 190 46 196'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -258,7 +260,6 @@ function render() {
   });
   const cur = document.querySelector('#list .cur');
   if (cur && $('list').closest('details').open) cur.scrollIntoView({ block: 'nearest' });
-  document.title = seg.type === 'done' ? '完成 - 間歇計時器' : `${fmt(remainMs / 1000)} ${seg.name}`;
 }
 
 // ---- 聲音 ----
