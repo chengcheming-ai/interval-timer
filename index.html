@@ -283,18 +283,19 @@ function beep(freq = 1760, ms = 100, vol = 0.35) {
 }
 
 // 最後 5 秒的明亮提示音：高音 E7 + 多個泛音，聲音清脆醒目
-function alertBeep() {
+function alertBeep(last = false) {
   if (!$('cSound').checked) return;
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-    const t0 = ac.currentTime, end = t0 + 0.16;
+    const t0 = ac.currentTime, end = t0 + (last ? 0.7 : 0.16), hold = last ? 0.45 : 0.05;
+    const f0 = last ? 3520 : 2637;   // 最後一秒：更高的 A7 長音
     const g = ac.createGain();
     g.gain.setValueAtTime(0.0001, t0);
     g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.003);
-    g.gain.setValueAtTime(0.5, t0 + 0.05);
+    g.gain.setValueAtTime(0.5, t0 + hold);
     g.gain.exponentialRampToValueAtTime(0.0001, end);
     g.connect(ac.destination);
-    [[2637, 1, 'triangle'], [5274, 0.35, 'sine'], [7911, 0.15, 'sine']].forEach(([f, a, w]) => {
+    [[f0, 1, 'triangle'], [f0 * 2, 0.35, 'sine'], [f0 * 3, 0.15, 'sine']].forEach(([f, a, w]) => {
       const o = ac.createOscillator(), og = ac.createGain();
       o.type = w; o.frequency.value = f; og.gain.value = a;
       o.connect(og).connect(g); o.start(t0); o.stop(end + 0.02);
@@ -417,7 +418,7 @@ function tick() {
   const sec = Math.ceil(remainMs / 1000);
   if (running && sec >= 1 && sec <= 5 && sec !== lastBeepSec && sec < segs[idx].dur) {
     lastBeepSec = sec;
-    alertBeep();                    // 最後 5 秒：明亮提示音
+    alertBeep(sec === 1);           // 最後 5 秒：明亮提示音，最後一秒為長音
   }
   const q = Math.ceil(remainMs / TICK_MS);
   if (running && sec > 5 && q !== lastTickQ && q < segs[idx].dur * 1000 / TICK_MS) {
