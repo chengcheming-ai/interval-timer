@@ -167,7 +167,7 @@ const $ = id => document.getElementById(id);
 const R = 90, C = 2 * Math.PI * R;
 $('prog').style.strokeDasharray = C;
 
-let segs = [], idx = 0, remainMs = 0, running = false, lastTs = 0, timer = null, lastBeepSec = null, wakeLock = null;
+let segs = [], idx = 0, remainMs = 0, running = false, lastTs = 0, timer = null, lastBeepSec = null, lastTickQ = null, wakeLock = null;
 
 const fmt = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const num = (id, d) => { const v = parseInt($(id).value, 10); return isNaN(v) ? d : v; };
@@ -187,7 +187,7 @@ function build() {
     }
   }
   segs.push({ type: 'done', name: '完成', dur: 0, r: rounds, s: sets });
-  idx = 0; remainMs = segs[0].dur * 1000; lastBeepSec = null;
+  idx = 0; remainMs = segs[0].dur * 1000; lastBeepSec = null; lastTickQ = null;
   $('cfgSum').textContent = `${work}s／${rest}s × ${sets}組 × ${rounds}輪`;
   renderList(); render();
 }
@@ -228,7 +228,7 @@ function seekTo(t) {
   while (i < segs.length - 1 && cum + segs[i].dur <= t) { cum += segs[i].dur; i++; }
   idx = i;
   remainMs = (segs[i].dur - (t - cum)) * 1000;
-  lastBeepSec = Math.ceil(remainMs / 1000);   // 跳轉當下不補播聲音
+  lastBeepSec = Math.ceil(remainMs / 1000); lastTickQ = Math.ceil(remainMs / TICK_MS);   // 跳轉當下不補播聲音
   lastTs = performance.now();
   if (segs[idx].type === 'done' && running) stop();
   render();
@@ -350,14 +350,34 @@ function announceSeg(seg) {
   if (seg.type === 'work') say('開始');
   else if (seg.type === 'rest' || seg.type === 'long') say('休息');
 }
-function tickSound() {
-  if (!$('cTick').checked) return;
-  beep(2637, 25, 0.12);
+// 快節奏碼表滴答聲：每秒 4 下，「滴」「答」交替的短促機械喀聲（濾波雜訊）
+const TICK_MS = 250;
+let noiseBuf = null;
+function tickSound(tock) {
+  if (!$('cSound').checked || !$('cTick').checked) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (!noiseBuf) {
+      noiseBuf = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.03), ac.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const t0 = ac.currentTime;
+    const src = ac.createBufferSource(); src.buffer = noiseBuf;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass';
+    bp.frequency.value = tock ? 2600 : 3800; bp.Q.value = 6;
+    const g = ac.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(tock ? 0.5 : 0.6, t0 + 0.001);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.022);
+    src.connect(bp).connect(g).connect(ac.destination);
+    src.start(t0); src.stop(t0 + 0.03);
+  } catch (e) {}
 }
 
 function enterSeg(i, announce = true) {
   idx = Math.max(0, Math.min(i, segs.length - 1));
-  remainMs = segs[idx].dur * 1000; lastBeepSec = null;
+  remainMs = segs[idx].dur * 1000; lastBeepSec = null; lastTickQ = null;
   const seg = segs[idx];
   if (announce) {
     if (seg.type === 'done') { beep(1568, 160); setTimeout(() => beep(2093, 160), 170); setTimeout(() => beep(2637, 400), 340); say('全部完成'); stop(); }
@@ -375,10 +395,14 @@ function tick() {
     remainMs -= over;
   }
   const sec = Math.ceil(remainMs / 1000);
-  if (running && sec >= 1 && sec !== lastBeepSec && sec < segs[idx].dur) {
+  if (running && sec >= 1 && sec <= 3 && sec !== lastBeepSec && sec < segs[idx].dur) {
     lastBeepSec = sec;
-    if (sec <= 3) beep(1760, 90);   // 最後 3 秒：提示音
-    else tickSound();               // 其餘每秒：滴答聲
+    beep(1760, 90);                 // 最後 3 秒：提示音（維持原樣）
+  }
+  const q = Math.ceil(remainMs / TICK_MS);
+  if (running && sec > 3 && q !== lastTickQ && q < segs[idx].dur * 1000 / TICK_MS) {
+    lastTickQ = q;
+    tickSound(q % 2 === 0);         // 其餘時間：快節奏滴答聲
   }
   render();
 }
@@ -388,7 +412,7 @@ async function start() {
   running = true; lastTs = performance.now();
   try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
   if (elapsedSec() === 0) { const s = segs[0]; beep(s.type === 'work' ? 2093 : 1568, 220); announceSeg(s); }
-  timer = setInterval(tick, 100);
+  timer = setInterval(tick, 25);
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
   render();
 }
