@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interval Timer – Free Online Tabata &amp; HIIT Timer</title>
+<meta name="description" content="Free online interval timer for Tabata, HIIT and circuit training. Set work, rest, sets and rounds, with beeps, ticking and spoken cues. Works on any phone, no sign-up.">
+<link rel="canonical" href="https://chengcheming-ai.github.io/interval-timer/en/">
+<link rel="alternate" hreflang="zh-Hant" href="https://chengcheming-ai.github.io/interval-timer/">
+<link rel="alternate" hreflang="en" href="https://chengcheming-ai.github.io/interval-timer/en/">
+<link rel="alternate" hreflang="x-default" href="https://chengcheming-ai.github.io/interval-timer/en/">
+<meta property="og:title" content="Interval Timer – Free Online Tabata &amp; HIIT Timer">
+<meta property="og:description" content="Set work, rest, sets and rounds, with beeps and spoken cues. Great on phones too.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://chengcheming-ai.github.io/interval-timer/en/">
+<meta property="og:image" content="https://chengcheming-ai.github.io/interval-timer/icon-512.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Interval Timer","alternateName":"Interval Timer – Free Online Tabata & HIIT Timer","url":"https://chengcheming-ai.github.io/interval-timer/en/","applicationCategory":"HealthApplication","operatingSystem":"Any","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta name="apple-mobile-web-app-title" content="Interval Timer">
+<meta name="application-name" content="Interval Timer">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%232ecc71'/%3E%3Ccircle cx='160' cy='54' r='24' fill='%23fff'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M140 98 116 152'/%3E%3Cpath d='M138 104 176 126 204 104'/%3E%3Cpath d='M138 104 100 112 78 140'/%3E%3Cpath d='M116 152 162 178 150 226'/%3E%3Cpath d='M116 152 88 190 46 196'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="../style.css?v=20261122b">
+</head>
+<body class="phase-ready">
+<div class="wrap">
+  <a class="lang" href="../" hreflang="zh-Hant" lang="zh-Hant">中文</a>
+  <div class="top">
+    <div class="chip"><div class="k">Round</div><div class="v" id="round">0/3</div></div>
+    <div class="chip"><div class="k">Set</div><div class="v" id="set">0/4</div></div>
+    <div class="chip"><div class="k">Time left</div><div class="v" id="totalLeft">0:00</div></div>
+  </div>
+
+  <div class="ringbox">
+    <svg viewBox="0 0 200 200">
+      <circle class="track" cx="100" cy="100" r="90" fill="none" stroke-width="12"/>
+      <circle class="prog" id="prog" cx="100" cy="100" r="90" fill="none" stroke-width="12"/>
+    </svg>
+    <div class="center">
+      <div class="phase" id="phase">Get ready</div>
+      <div class="time" id="time">0:00</div>
+      <div class="next" id="next"></div>
+    </div>
+  </div>
+
+  <div class="bar" id="bar" title="Tap or drag to jump to any point"><div id="totalBar"></div><div id="ticks"></div><div id="thumb"></div></div>
+  <div class="totals"><span id="elapsed">Elapsed 0:00</span><span id="total">Total 0:00</span></div>
+
+  <div class="ctrl">
+    <button class="small" id="prev" title="Previous">⏮</button>
+    <button class="small" id="reset" title="Reset">↺</button>
+    <button class="main" id="play">Start</button>
+    <button class="small" id="skip" title="Next">⏭</button>
+  </div>
+
+  <details>
+    <summary class="sum"><span>⚙ Settings</span><b id="cfgSum"></b></summary>
+    <div id="cfgBody">
+      <div class="sec">
+        <div class="sh">Time (seconds)</div>
+        <div class="rows">
+          <div class="row"><span>Work</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cWork" min="1" value="30"><button data-d="5">＋</button></div></div>
+          <div class="row"><span>Rest between sets</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cRest" min="0" value="15"><button data-d="5">＋</button></div></div>
+          <div class="row"><span>Rest after round</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cLong" min="0" value="30"><button data-d="5">＋</button></div></div>
+          <div class="row"><span>Get-ready countdown</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cPrep" min="0" value="5"><button data-d="1">＋</button></div></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sh">Repeats</div>
+        <div class="rows">
+          <div class="row"><span>Sets per round</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cSets" min="1" value="4"><button data-d="1">＋</button></div></div>
+          <div class="row"><span>Rounds</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cRounds" min="1" value="3"><button data-d="1">＋</button></div></div>
+        </div>
+        <div class="tgls" style="margin-top:8px">
+          <label class="tg"><input type="checkbox" id="cSkipLast" checked><span>Skip rest after the final round</span></label>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sh">Sound</div>
+        <div class="tgls">
+          <label class="tg"><input type="checkbox" id="cSound" checked><span>Beeps</span></label>
+          <label class="tg"><input type="checkbox" id="cTick" checked><span>Ticking</span></label>
+          <label class="tg"><input type="checkbox" id="cVoice" checked><span>Voice</span></label>
+        </div>
+        <div id="voiceBox">
+          <div class="vrow2"><select id="voiceSel"></select><button id="vTest" title="Preview">▶</button></div>
+          <div class="chips" id="presetList"></div>
+        </div>
+      </div>
+      <details class="sub2">
+        <summary>Timeline (edit any interval, tap to jump)</summary>
+        <div class="list" id="list"></div>
+      </details>
+    </div>
+  </details>
+  <details class="guide">
+    <summary>How to use &amp; Tabata / HIIT basics</summary>
+    <h2>How do I use this interval timer?</h2>
+    <p>Open Settings, enter your work time, rest time, sets per round and rounds, then press Start. The timer counts down and tells you when to switch with beeps, ticking and an English voice. The settings bar shows your workout at a glance, and you can drag the progress bar to jump to any point.</p>
+    <h2>How do I set up Tabata?</h2>
+    <p>Tabata is 20 seconds of work and 10 seconds of rest, repeated 8 times for a total of 4 minutes. Set Work 20, Rest between sets 10, Sets per round 8, Rounds 1 and Rest after round 0.</p>
+    <h2>What is the difference between HIIT and Tabata?</h2>
+    <p>HIIT (high-intensity interval training) alternates hard effort with rest, at whatever ratio you choose. Tabata is one specific form of it, fixed at 20 seconds on and 10 seconds off.</p>
+    <h2>Common interval settings</h2>
+    <table><tr><th>Workout</th><th>Work</th><th>Rest</th><th>Sets</th></tr>
+    <tr><td>Tabata</td><td>20 s</td><td>10 s</td><td>8</td></tr>
+    <tr><td>Beginner HIIT</td><td>30 s</td><td>30 s</td><td>6–8</td></tr>
+    <tr><td>Advanced HIIT</td><td>40 s</td><td>20 s</td><td>6–8</td></tr>
+    <tr><td>Strength circuit (squats, planks)</td><td>45 s</td><td>15 s</td><td>4–6</td></tr></table>
+    <p>These are general guidelines. Warm up first, and check with a doctor before training if you have a heart condition, an injury or are pregnant.</p>
+  </details>
+  <h1 style="margin:22px 0 0;font-size:14px;font-weight:600;text-align:center;color:var(--muted)">Interval Timer – Free Online Tabata &amp; HIIT Timer</h1>
+  <p class="note" style="margin:18px 0 4px;font-size:12px;line-height:1.6;text-align:center;opacity:.55">This site counts visits anonymously with GoatCounter. No cookies and no personal data collected; your voice and language settings stay in your own browser.</p>
+  <p class="sites">Other sites (in Chinese): <a href="https://chengcheming-ai.github.io/labor-calculator/" target="_blank" rel="noopener">Taiwan labor rights calculator</a>, <a href="https://chengcheming-ai.github.io/zhu-zai-shen-pang/" target="_blank" rel="noopener">Chinese worship songs</a></p>
+</div>
+
+<script data-goatcounter="https://intervaltimer-tw.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="../app.js?v=20261122b"></script>
+</body>
+</html>
