@@ -355,13 +355,57 @@ try { Object.assign(vcfg, JSON.parse(localStorage.getItem('timerVoice') || '{}')
 const saveV = () => { try { localStorage.setItem('timerVoice', JSON.stringify(vcfg)); } catch (e) {} };
 
 let voices = [], voice = null;
-const vScore = v => (/natural/i.test(v.name) ? 8 : 0) + (/online/i.test(v.name) ? 4 : 0) +
-                    (/google/i.test(v.name) ? 3 : 0) + (/TW|Hant/i.test(v.lang) ? 2 : 0);
+// 選單只顯示「地區・女聲／男聲＋編號」，不顯示系統語音的人名
+const REGIONS = ['台灣', '中國', '中國東北', '中國陝西', '中國四川', '香港／粵語'];
+function langName(l) {
+  return /HK|yue/i.test(l) ? '香港／粵語' : /TW|Hant/i.test(l) ? '台灣' :
+    /liaoning/i.test(l) ? '中國東北' : /shaanxi/i.test(l) ? '中國陝西' : /sichuan/i.test(l) ? '中國四川' :
+    /CN|Hans/i.test(l) ? '中國' : '中文';
+}
+const regionRank = v => { const i = REGIONS.indexOf(langName(v.lang)); return i < 0 ? REGIONS.length : i; };
+// 同一個聲音的識別：iPhone 會把內建語音列兩次（或同聲音不同音質），靠這個合併成一個
+function voiceId(v) {
+  const uri = v.voiceURI || '';
+  const base = /^com\.apple\./i.test(uri) ? uri.split('.').pop() : v.name;
+  const key = base.toLowerCase()
+    .replace(/[（(][^（()）]*(enhanced|premium|compact|natural|增強|增强|優化|优化|高品質|高品质|高音質|高音质)[^（()）]*[)）]/g, '')
+    .replace(/\bonline\b|[-_](super-compact|compact|enhanced|premium|network|local)$/g, '')
+    .replace(/[\s_-]+/g, '');
+  return v.lang.replace('_', '-').toLowerCase() + '|' + key;
+}
+const FEMALE = /female|mei-?jia|美佳|ting-?ting|tian-?tian|婷婷|甜甜|sin-?ji|善怡|yu-?shu|[語语]舒|lilian|sha-?sha|li-?sheng|lan-?lan|shan-?shan|dong-?mei|pan-?pan|\bli-?li\b|\byue\b|\bflo\b|grandma|奶|嬤|祖母|sandy|shelley|xiao(?!yun)|hsiao|huihui|yaoyao|yating|hanhan|hiu|tracy|google (普通|國語|国语|粤|粵)|-(ccc|ssa|ctc|jar|yuc)-/i;
+const MALE = /(^|[^e])male|li-?mu|李牧|bo-?bo|tao-?tao|bin-?bin|hao-?hao|aa-?sing|\bhan\b|eddy|grandpa|爺|爷|祖父|\breed\b|rocko|\byun(xi|xia|jian|yang|jhe|ze|feng|hao|ye)|kangkang|zhiwei|danny|wanlung|-(ccd|cce|ctd|cte|yud|yue|yuf)-(network|local)/i;
+function genderName(v) {
+  const t = v.name + ' ' + (v.voiceURI || '');
+  return MALE.test(t) ? '男聲' : FEMALE.test(t) ? '女聲' : '語音';
+}
+const vScore = v => {
+  const t = v.name + ' ' + (v.voiceURI || '');
+  return (/natural/i.test(t) ? 8 : 0) + (/online/i.test(t) ? 4 : 0) + (/google/i.test(t) ? 3 : 0) +
+    (/premium/i.test(t) ? 3 : /enhanced|增強|增强|優化|优化/i.test(t) ? 2 : 0) -
+    (/super-compact/i.test(t) ? 1 : 0) - (/eloquence|eddy|\bflo\b|grandma|grandpa|\breed\b|rocko|sandy|shelley/i.test(t) ? 5 : 0);
+};
+const GENDERS = ['女聲', '男聲', '語音'];
 function loadVoices() {
   if (!window.speechSynthesis) return;
-  voices = speechSynthesis.getVoices().filter(v => /^zh|cmn|yue/i.test(v.lang)).sort((a, b) => vScore(b) - vScore(a));
-  voice = voices.find(v => v.name === vcfg.voice) || voices[0] || null;
+  const all = speechSynthesis.getVoices().filter(v => /^zh|cmn|yue/i.test(v.lang))
+    .sort((a, b) => regionRank(a) - regionRank(b) || vScore(b) - vScore(a));
+  const seen = new Set();
+  const uniq = all.filter(v => { const id = voiceId(v); return !seen.has(id) && seen.add(id); });
+  const legacy = vcfg.vid ? null : all.find(v => v.name === vcfg.voice);   // 舊版只存名稱
+  const want = vcfg.vid || (legacy && voiceId(legacy));
+  voice = uniq.find(v => voiceId(v) === want) || uniq[0] || null;
+  voices = uniq.slice().sort((a, b) => regionRank(a) - regionRank(b) ||
+    GENDERS.indexOf(genderName(a)) - GENDERS.indexOf(genderName(b)) || vScore(b) - vScore(a));
   renderVoices();
+}
+function voiceLabels() {
+  const n = {};
+  return voices.map(v => {
+    const k = langName(v.lang) + '・' + genderName(v);
+    n[k] = (n[k] || 0) + 1;
+    return k + ' ' + n[k] + (/natural|online/i.test(v.name) ? '（自然）' : '');
+  });
 }
 function speak(t, v, pr, queue = false) {
   if (!window.speechSynthesis) return;
@@ -385,9 +429,6 @@ function say(t) {
   if (!$('cVoice').checked) return;
   speak(t, voice, PRESETS[vcfg.preset] || PRESETS[0]);
 }
-function langName(l) {
-  return /TW|Hant/i.test(l) ? '台灣' : /HK|yue/i.test(l) ? '香港／粵語' : /CN|Hans/i.test(l) ? '中國' : l;
-}
 const curPreset = () => PRESETS[vcfg.preset] || PRESETS[0];
 function renderVoices() {
   const sel = $('voiceSel');
@@ -397,14 +438,14 @@ function renderVoices() {
     $('voiceBox').insertAdjacentHTML('beforeend', '<div class="vempty">找不到中文語音。建議改用 Edge 開啟，或在 Windows「設定 → 時間與語言 → 語音」加裝中文語音。</div>');
   } else {
     sel.disabled = false;
-    sel.innerHTML = voices.map((v, i) =>
-      `<option value="${i}"${v === voice ? ' selected' : ''}>${v.name.replace(/^Microsoft\s+/i, '').replace(/\s*-\s*Chinese.*$/i, '')}（${langName(v.lang)}${/natural|online/i.test(v.name) ? '・自然' : ''}）</option>`).join('');
+    const labels = voiceLabels();
+    sel.innerHTML = voices.map((v, i) => `<option value="${i}"${v === voice ? ' selected' : ''}>${labels[i]}</option>`).join('');
   }
   $('presetList').innerHTML = PRESETS.map((p, i) =>
     `<button class="${i === +vcfg.preset ? 'sel' : ''}" data-p="${i}" title="${p.d}">${p.n}</button>`).join('');
 }
 $('voiceSel').addEventListener('change', e => {
-  voice = voices[+e.target.value]; vcfg.voice = voice.name; saveV(); preview(voice, curPreset());
+  voice = voices[+e.target.value]; vcfg.voice = voice.name; vcfg.vid = voiceId(voice); saveV(); preview(voice, curPreset());
 });
 $('vTest').onclick = () => preview(voice, curPreset());
 $('presetList').addEventListener('click', e => {
