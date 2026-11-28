@@ -88,3 +88,40 @@ summary{cursor:pointer; color:var(--muted)}
 .guide th{color:var(--muted); font-weight:500}
 .lang{align-self:flex-end; margin:-6px 0; padding:4px 12px; border:1px solid #333b44; border-radius:999px; color:var(--text); font-size:13px; text-decoration:none}
 html[lang=en] .main{font-size:18px}
+
+/* ===== 2026-11-28 好讀好用：快速練法、白話提示、說明一題一題點開 ===== */
+.chip .k{font-size:13px}
+.sh{font-size:13px}
+.sites,.note{font-size:13px!important}
+.quick{background:var(--panel);border-radius:14px;padding:12px 14px}
+.qh{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;font-size:14px;color:var(--text);margin-bottom:10px}
+.qh span{white-space:nowrap}
+.pre{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pre button{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;padding:10px 12px;border-radius:12px;cursor:pointer;
+  background:#111418;border:1px solid #333b44;color:var(--text);font:inherit;transition:border-color .2s,background .2s}
+.pre button i{grid-row:span 2;font-style:normal;font-size:24px}
+.pre button b{font-size:16px}
+.pre button small{font-size:12px;color:var(--muted);line-height:1.35}
+.pre button:hover{border-color:var(--phase)}
+.pre button.on{border-color:var(--work);background:rgba(46,204,113,.12);box-shadow:0 0 0 1px var(--work) inset}
+.qn{margin:10px 0 0;font-size:13px;color:var(--muted);text-align:center}
+.hint{margin:-4px 0 10px;font-size:13px;line-height:1.55;color:var(--muted);background:#111418;border-left:3px solid var(--phase);padding:6px 10px;border-radius:6px}
+.guide .say{margin:12px 0 10px;padding:10px 12px;border-radius:10px;background:rgba(241,196,15,.08);border:1px solid rgba(241,196,15,.3);color:var(--text);font-size:15px}
+.guide .say b{color:var(--done)}
+.viz{display:flex;gap:3px;height:22px;margin:4px 0 6px}
+.viz i{border-radius:4px}
+.viz .w{flex:2;background:var(--work)}
+.viz .r{flex:1;background:var(--rest)}
+.vl{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted);margin:0 0 10px}
+.vl i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.vl .w{background:var(--work)}.vl .r{background:var(--rest)}
+.guide details.q{background:#111418;border:1px solid #2a3038;border-radius:12px;padding:0;margin:8px 0}
+.guide details.q>summary{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 14px;color:var(--text)}
+.guide details.q>summary::-webkit-details-marker{display:none}
+.guide details.q>summary::before{content:"Q";flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;color:#111;background:var(--ready)}
+.guide details.q>summary::after{content:"▾";margin-left:auto;color:var(--muted);transition:transform .2s}
+.guide details.q[open]>summary::after{transform:rotate(180deg)}
+.guide details.q h2{margin:0;font-size:15px;flex:1}
+.guide details.q>p,.guide details.q>table{margin:0 14px 12px;width:calc(100% - 28px)}
+.guide details.q>p{font-size:15px}
+@media (prefers-reduced-motion:reduce){.guide details.q>summary::after{transition:none}}

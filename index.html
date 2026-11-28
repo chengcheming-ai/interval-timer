@@ -24,7 +24,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2314181e'/%3E%3Cg transform='translate(260 262) scale(1.06) translate(-246 -240)'%3E%3Cg fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='350' cy='116' r='42' fill='%23fff' stroke='none'/%3E%3Cpath stroke-width='58' d='M292 190 236 284'/%3E%3Cpath stroke-width='36' d='M296 182 346 246 412 214'/%3E%3Cpath stroke-width='36' d='M284 180 204 160 146 212'/%3E%3Cpath stroke-width='44' d='M240 292 344 296 338 390 372 392'/%3E%3Cpath stroke-width='44' d='M230 292 188 372 92 350'/%3E%3C/g%3E%3Cg stroke='%232ecc71' stroke-width='20' stroke-linecap='round'%3E%3Cpath d='M96 126H156'/%3E%3Cpath d='M48 262H132'/%3E%3Cpath d='M102 306H146'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
 <link rel="manifest" href="manifest.webmanifest?v=2">
-<link rel="stylesheet" href="style.css?v=20261122b">
+<link rel="stylesheet" href="style.css?v=20261128">
 </head>
 <body class="phase-ready">
 <div class="wrap">
@@ -57,11 +57,18 @@
     <button class="small" id="skip" title="下一段">⏭</button>
   </div>
 
+  <div class="quick"><div class="qh"><span>① 選一種練法</span><span>② 按「開始」</span><span>③ 聽到聲音就換動作</span></div><div class="pre">
+<button data-p="20,10,8,1,0"><i>🔥</i><b>Tabata</b><small>動 20 秒／休 10 秒・8 組</small></button>
+<button data-p="30,30,6,1,0"><i>🌱</i><b>新手入門</b><small>動 30 秒／休 30 秒・6 組</small></button>
+<button data-p="40,20,8,1,0"><i>💪</i><b>進階燃脂</b><small>動 40 秒／休 20 秒・8 組</small></button>
+<button data-p="45,15,5,3,60"><i>🏋️</i><b>肌力循環</b><small>動 45 秒／休 15 秒・5 組 × 3 輪</small></button>
+</div><p class="qn">想自己調秒數？點下面的「⚙ 設定」。</p></div>
+
   <details>
     <summary class="sum"><span>⚙ 設定</span><b id="cfgSum"></b></summary>
     <div id="cfgBody">
       <div class="sec">
-        <div class="sh">時間（秒）</div>
+        <div class="sh">時間（秒）</div><p class="hint">「每輪最後休息」：每做完一輪，休息久一點。</p>
         <div class="rows">
           <div class="row"><span>運動</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cWork" min="1" value="30"><button data-d="5">＋</button></div></div>
           <div class="row"><span>組間休息</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cRest" min="0" value="15"><button data-d="5">＋</button></div></div>
@@ -70,7 +77,7 @@
         </div>
       </div>
       <div class="sec">
-        <div class="sh">次數</div>
+        <div class="sh">次數</div><p class="hint">1 組＝運動一次＋休息一次；所有組做完＝1 輪。</p>
         <div class="rows">
           <div class="row"><span>每輪組數</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cSets" min="1" value="4"><button data-d="1">＋</button></div></div>
           <div class="row"><span>輪數</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cRounds" min="1" value="3"><button data-d="1">＋</button></div></div>
@@ -99,19 +106,19 @@
   </details>
   <details class="guide">
     <summary>使用說明與 Tabata／HIIT 介紹</summary>
-    <h2>怎麼使用這個間歇計時器？</h2>
-    <p>打開「設定」，填入運動秒數、組間休息、每輪組數與輪數，按「開始」就會自動倒數，並以提示音、滴答聲和中文語音提醒換段。設定列會顯示總長，也可以拖曳進度條跳到任一段。</p>
-    <h2>Tabata 怎麼設定？</h2>
-    <p>Tabata 是運動 20 秒、休息 10 秒，重複 8 組，共 4 分鐘。在這裡設定：運動 20、組間休息 10、每輪組數 8、輪數 1、每輪最後休息 0。</p>
-    <h2>HIIT 和 Tabata 有什麼不同？</h2>
-    <p>HIIT（高強度間歇訓練）是高強度運動與休息交替的訓練方式，時間比例可以自由調整；Tabata 是其中一種固定為 20 秒／10 秒的形式。</p>
-    <h2>常見的間歇設定</h2>
+    <p class="say">🏃 間歇運動就是<b>用力動一下、休息一下</b>，一直重複。計時器會幫你數秒、出聲提醒，你只要專心運動。</p>
+    <div class="viz" aria-hidden="true"><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i></div><p class="vl"><span><i class="w"></i>運動 20 秒</span><span><i class="r"></i>休息 10 秒</span><span>× 8 組＝4 分鐘（Tabata）</span></p>
+    <details class="q"><summary><h2>怎麼使用這個間歇計時器？</h2></summary><p>最快的方法：點上面的一種練法（例如 Tabata），再按「開始」。計時器會先倒數，接著用「嗶」聲、滴答聲和語音告訴你什麼時候運動、什麼時候休息。想自己調秒數，就打開「⚙ 設定」。拖曳進度條可以跳到任何一段。</p></details>
+    <details class="q"><summary><h2>Tabata 怎麼設定？</h2></summary><p>Tabata 是運動 20 秒、休息 10 秒，重複 8 組，總共 4 分鐘。直接點上面的「Tabata」就設定好了。</p></details>
+    <details class="q"><summary><h2>HIIT 和 Tabata 有什麼不同？</h2></summary><p>HIIT（高強度間歇訓練）就是「很累的運動」和「休息」輪流做，秒數可以自己決定。Tabata 是 HIIT 的一種，固定動 20 秒、休 10 秒。</p></details>
+    <details class="q"><summary><h2>常見的間歇設定</h2></summary>
     <table><tr><th>用途</th><th>運動</th><th>休息</th><th>組數</th></tr>
     <tr><td>Tabata</td><td>20 秒</td><td>10 秒</td><td>8 組</td></tr>
     <tr><td>入門 HIIT</td><td>30 秒</td><td>30 秒</td><td>6～8 組</td></tr>
     <tr><td>進階 HIIT</td><td>40 秒</td><td>20 秒</td><td>6～8 組</td></tr>
-    <tr><td>深蹲、棒式等肌力循環</td><td>45 秒</td><td>15 秒</td><td>4～6 組</td></tr></table>
-    <p>以上為一般參考。運動前請先熱身，有心血管疾病、受傷或懷孕等狀況，請先詢問醫師。</p>
+    <tr><td>深蹲、棒式等肌力循環</td><td>45 秒</td><td>15 秒</td><td>4～6 組</td></tr></table></details>
+    <details class="q"><summary><h2>運動安全提醒</h2></summary><p>以上只是一般參考。運動前要先熱身。如果有心臟、血管方面的疾病、受傷或懷孕，請先問醫師。</p></details>
+  
   </details>
   <h1 style="margin:22px 0 0;font-size:14px;font-weight:600;text-align:center;color:var(--muted)">間歇計時器 Interval Timer｜Tabata、HIIT 線上計時</h1>
   <p class="note" style="margin:18px 0 4px;font-size:12px;line-height:1.6;text-align:center;opacity:.55">本站使用 GoatCounter 匿名統計瀏覽次數，不使用 Cookie、不收集個人資料；語音與語言設定只存在您自己的瀏覽器中。</p>
@@ -119,6 +126,6 @@
 </div>
 
 <script data-goatcounter="https://intervaltimer-tw.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script src="app.js?v=20261122b"></script>
+<script src="app.js?v=20261128"></script>
 </body>
 </html>

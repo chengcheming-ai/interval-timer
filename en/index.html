@@ -23,7 +23,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2314181e'/%3E%3Cg transform='translate(260 262) scale(1.06) translate(-246 -240)'%3E%3Cg fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='350' cy='116' r='42' fill='%23fff' stroke='none'/%3E%3Cpath stroke-width='58' d='M292 190 236 284'/%3E%3Cpath stroke-width='36' d='M296 182 346 246 412 214'/%3E%3Cpath stroke-width='36' d='M284 180 204 160 146 212'/%3E%3Cpath stroke-width='44' d='M240 292 344 296 338 390 372 392'/%3E%3Cpath stroke-width='44' d='M230 292 188 372 92 350'/%3E%3C/g%3E%3Cg stroke='%232ecc71' stroke-width='20' stroke-linecap='round'%3E%3Cpath d='M96 126H156'/%3E%3Cpath d='M48 262H132'/%3E%3Cpath d='M102 306H146'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png?v=2">
 <link rel="manifest" href="manifest.webmanifest?v=2">
-<link rel="stylesheet" href="../style.css?v=20261122b">
+<link rel="stylesheet" href="../style.css?v=20261128">
 </head>
 <body class="phase-ready">
 <div class="wrap">
@@ -56,11 +56,18 @@
     <button class="small" id="skip" title="Next">⏭</button>
   </div>
 
+  <div class="quick"><div class="qh"><span>① Pick a workout</span><span>② Tap Start</span><span>③ Switch at the beep</span></div><div class="pre">
+<button data-p="20,10,8,1,0"><i>🔥</i><b>Tabata</b><small>Work 20s / Rest 10s · 8 sets</small></button>
+<button data-p="30,30,6,1,0"><i>🌱</i><b>Beginner</b><small>Work 30s / Rest 30s · 6 sets</small></button>
+<button data-p="40,20,8,1,0"><i>💪</i><b>Fat burner</b><small>Work 40s / Rest 20s · 8 sets</small></button>
+<button data-p="45,15,5,3,60"><i>🏋️</i><b>Strength circuit</b><small>Work 45s / Rest 15s · 5 sets × 3 rounds</small></button>
+</div><p class="qn">Want your own times? Open ⚙ Settings below.</p></div>
+
   <details>
     <summary class="sum"><span>⚙ Settings</span><b id="cfgSum"></b></summary>
     <div id="cfgBody">
       <div class="sec">
-        <div class="sh">Time (seconds)</div>
+        <div class="sh">Time (seconds)</div><p class="hint">“Rest after round”: a longer break after each round.</p>
         <div class="rows">
           <div class="row"><span>Work</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cWork" min="1" value="30"><button data-d="5">＋</button></div></div>
           <div class="row"><span>Rest between sets</span><div class="step"><button data-d="-5">−</button><input type="number" inputmode="numeric" id="cRest" min="0" value="15"><button data-d="5">＋</button></div></div>
@@ -69,7 +76,7 @@
         </div>
       </div>
       <div class="sec">
-        <div class="sh">Repeats</div>
+        <div class="sh">Repeats</div><p class="hint">1 set = one work + one rest. All sets done = 1 round.</p>
         <div class="rows">
           <div class="row"><span>Sets per round</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cSets" min="1" value="4"><button data-d="1">＋</button></div></div>
           <div class="row"><span>Rounds</span><div class="step"><button data-d="-1">−</button><input type="number" inputmode="numeric" id="cRounds" min="1" value="3"><button data-d="1">＋</button></div></div>
@@ -97,20 +104,20 @@
     </div>
   </details>
   <details class="guide">
-    <summary>How to use &amp; Tabata / HIIT basics</summary>
-    <h2>How do I use this interval timer?</h2>
-    <p>Open Settings, enter your work time, rest time, sets per round and rounds, then press Start. The timer counts down and tells you when to switch with beeps, ticking and an English voice. The settings bar shows your workout at a glance, and you can drag the progress bar to jump to any point.</p>
-    <h2>How do I set up Tabata?</h2>
-    <p>Tabata is 20 seconds of work and 10 seconds of rest, repeated 8 times for a total of 4 minutes. Set Work 20, Rest between sets 10, Sets per round 8, Rounds 1 and Rest after round 0.</p>
-    <h2>What is the difference between HIIT and Tabata?</h2>
-    <p>HIIT (high-intensity interval training) alternates hard effort with rest, at whatever ratio you choose. Tabata is one specific form of it, fixed at 20 seconds on and 10 seconds off.</p>
-    <h2>Common interval settings</h2>
-    <table><tr><th>Workout</th><th>Work</th><th>Rest</th><th>Sets</th></tr>
+    <summary>How to use · About Tabata / HIIT</summary>
+    <p class="say">🏃 Interval training means <b>work hard, rest a little</b>, and repeat. The timer counts for you and tells you when to switch, so you can just focus on moving.</p>
+    <div class="viz" aria-hidden="true"><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i><i class="w"></i><i class="r"></i></div><p class="vl"><span><i class="w"></i>Work 20s</span><span><i class="r"></i>Rest 10s</span><span>× 8 sets = 4 minutes (Tabata)</span></p>
+    <details class="q"><summary><h2>How do I use this interval timer?</h2></summary><p>Quickest way: tap a workout above (for example Tabata), then tap Start. After a short countdown, beeps, ticking and a voice tell you when to work and when to rest. To set your own times, open ⚙ Settings. Drag the progress bar to jump to any part.</p></details>
+    <details class="q"><summary><h2>How do I set up Tabata?</h2></summary><p>Tabata is 20 seconds of work and 10 seconds of rest, repeated 8 times: 4 minutes in total. Just tap “Tabata” above.</p></details>
+    <details class="q"><summary><h2>What is the difference between HIIT and Tabata?</h2></summary><p>HIIT (high-intensity interval training) switches between very hard work and rest, and you choose the times. Tabata is one type of HIIT with fixed 20s work and 10s rest.</p></details>
+    <details class="q"><summary><h2>Common interval settings</h2></summary>
+    <table><tr><th>Use</th><th>Work</th><th>Rest</th><th>Sets</th></tr>
     <tr><td>Tabata</td><td>20 s</td><td>10 s</td><td>8</td></tr>
     <tr><td>Beginner HIIT</td><td>30 s</td><td>30 s</td><td>6–8</td></tr>
     <tr><td>Advanced HIIT</td><td>40 s</td><td>20 s</td><td>6–8</td></tr>
-    <tr><td>Strength circuit (squats, planks)</td><td>45 s</td><td>15 s</td><td>4–6</td></tr></table>
-    <p>These are general guidelines. Warm up first, and check with a doctor before training if you have a heart condition, an injury or are pregnant.</p>
+    <tr><td>Strength circuit (squats, planks…)</td><td>45 s</td><td>15 s</td><td>4–6</td></tr></table></details>
+    <details class="q"><summary><h2>Safety first</h2></summary><p>These are general suggestions only. Always warm up first. If you have a heart or blood-vessel condition, an injury, or are pregnant, ask your doctor before you start.</p></details>
+  
   </details>
   <h1 style="margin:22px 0 0;font-size:14px;font-weight:600;text-align:center;color:var(--muted)">Interval Timer – Free Online Tabata &amp; HIIT Timer</h1>
   <p class="note" style="margin:18px 0 4px;font-size:12px;line-height:1.6;text-align:center;opacity:.55">This site counts visits anonymously with GoatCounter. No cookies and no personal data collected; your voice and language settings stay in your own browser.</p>
@@ -118,6 +125,6 @@
 </div>
 
 <script data-goatcounter="https://intervaltimer-tw.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script src="../app.js?v=20261122b"></script>
+<script src="../app.js?v=20261128"></script>
 </body>
 </html>

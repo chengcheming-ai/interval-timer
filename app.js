@@ -61,7 +61,18 @@ function build() {
 }
 function renderSum() {
   $('cfgSum').textContent = T.sum(num('cWork', 30), num('cRest', 15), num('cSets', 4), num('cRounds', 3));
+  // 標出目前符合的快速練法
+  const cur = [num('cWork', 30), num('cRest', 15), num('cSets', 4), num('cRounds', 3), num('cLong', 30)].join(',');
+  document.querySelectorAll('.pre button').forEach(b => b.classList.toggle('on', b.dataset.p === cur));
 }
+// 快速練法：點一下就套用秒數、組數、輪數（用事件委派，切換語言後按鈕重建也有效）
+document.addEventListener('click', e => {
+  const b = e.target.closest('.pre button'); if (!b) return;
+  const [w, r, s, n, l] = b.dataset.p.split(',');
+  $('cWork').value = w; $('cRest').value = r; $('cSets').value = s; $('cRounds').value = n; $('cLong').value = l;
+  stop(); build();
+  b.animate?.([{ transform: 'scale(.94)' }, { transform: 'scale(1)' }], { duration: 180 });
+});
 
 function totalSec() { return segs.reduce((a, b) => a + b.dur, 0); }
 function elapsedSec() {
@@ -422,7 +433,7 @@ const langUrl = l => l === 'en' ? ROOT + 'en/' : ROOT;
 const pages = {};
 const getPage = l => pages[l] = pages[l] || fetch(langUrl(l)).then(r => { if (!r.ok) throw r.status; return r.text(); })
   .then(t => new DOMParser().parseFromString(t, 'text/html')).catch(e => { delete pages[l]; throw e; });
-const TEXTS = '.chip .k, .sh, .row>span, .tg span, .sum>span, .sub2>summary, .guide, h1, .note, .sites, .lang';
+const TEXTS = '.chip .k, .sh, .hint, .quick, .row>span, .tg span, .sum>span, .sub2>summary, .guide, h1, .note, .sites, .lang';
 const ATTRS = [['#bar, #prev, #reset, #skip, #vTest', 'title'], ['meta[name=description], meta[name=application-name], meta[name=apple-mobile-web-app-title]', 'content'], ['.lang', 'hreflang'], ['.lang', 'lang']];
 async function setLang(l, remember) {
   if (l === LANG) return;
